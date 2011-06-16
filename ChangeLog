@@ -1,3 +1,7 @@
+2011-06-16 Brian Wolff
+
+	* Add read only support for showing DB mounts.
+
 2010-04-06 Kay Strobach  <info@kay-strobach.de>
 
 	* initial code generated with kickstarter

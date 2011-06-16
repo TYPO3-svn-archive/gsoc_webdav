@@ -73,6 +73,8 @@
 	// sabredav initialization
 		require_once 'lib/sabredav/lib/Sabre.autoload.php';
 		require_once 'Classes/class.tx_webdav_rootDirs.php';
+		require_once 'Classes/class.tx_webdav_pages.php';
+		require_once 'Classes/class.tx_webdav_content.php';
 		require_once 'Classes/class.tx_webdav_browser_plugin.php';
 		require_once 'Classes/class.tx_webdav_permission_plugin.php';
 	
@@ -117,6 +119,7 @@
 	// fetch filemounts
 		$BE_USER->fetchGroupData();
 		$fileMounts = $BE_USER->returnFilemounts();
+		$webMounts = $BE_USER->returnWebmounts();
 	//--------------------------------------------------------------------------
 	// create virtual directories for the filemounts in typo3
 		$mounts     = array();
@@ -124,6 +127,14 @@
 			#$mounts[] = $m = new ks_sabredav_rootDirs($fileMount['path']);
 			#$m->setName($fileMount['name'].'---'.htmlspecialchars($fileMount['path']));
 			$mounts[] = $m = new Sabre_DAV_FS_Directory($fileMount['path']);
+		}
+		foreach( $webMounts as $uid ) {
+			if ( $uid == 0 ) {
+				// fixme: using ts of 0 is probably wrong...
+				$mounts[] = new tx_webdav_pages( $uid, array( "title" => "CMS Records", "tstamp" => 0 ) );
+			} else {
+				$mounts[] = new tx_webdav_pages( $uid );
+			}
 		}
 		//----------------------------------------------------------------------
 		// add special folders for admins
@@ -171,7 +182,7 @@
 			}			
 			
 			//------------------------------------------------------------------
-			// add group folder 
+			// add group folder
 			if(is_dir($TYPO3_CONF_VARS['BE']['groupHomePath'])) {
 				$groupDirs     = array();
 				$groupDirArray = $TYPO3_DB->exec_SELECTgetRows(

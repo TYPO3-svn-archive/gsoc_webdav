@@ -112,6 +112,18 @@ if (!get_magic_quotes_gpc())	{
 }
 
 
+// ****************************************************
+// Include tables customization (tables + ext_tables)
+// ****************************************************
+include (TYPO3_tables_script ? PATH_typo3conf.TYPO3_tables_script : PATH_t3lib.'stddb/tables.php');
+        // Extension additions
+if ($TYPO3_LOADED_EXT['_CACHEFILE'])    {
+        include (PATH_typo3conf.$TYPO3_LOADED_EXT['_CACHEFILE'].'_ext_tables.php');
+} else {
+        include (PATH_t3lib.'stddb/load_ext_tables.php');
+}
+
+
 // *********************
 // Look for extension ID which will launch alternative output engine
 // *********************
